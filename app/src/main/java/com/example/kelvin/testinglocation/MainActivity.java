@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Location currentLocation;//Device current location
 
     private TextView tvLocation;//Text on screen
+    String androidId;
 
     private int count = 0;
 
@@ -36,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);//Get location client
         initGui();//Initializes GUI elements
         getStartLocation();
@@ -54,12 +59,13 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationResult(LocationResult locationResult) {
                 currentLocation = locationResult.getLastLocation();
 
-                String ss = "Latitude: " + currentLocation.getLatitude() + " (degrees)\n" +
-                        "Longitude: " + currentLocation.getLongitude() + " (degrees)\n" +
+                String ss = "Latitude: " + currentLocation.getLatitude() + "\n" +
+                        "Longitude: " + currentLocation.getLongitude() + "\n" +
                         "Altitude: " + currentLocation.getAltitude() + " (meters from WGS Ellipsoid)\n" +
                         "Speed: " + currentLocation.getSpeed() + " (m/s)\n" +
                         "Time: " + new java.util.Date(currentLocation.getTime()).toString() + "\n" +
                         "Accuracy: " + currentLocation.getAccuracy() + " (meters of error)\n" +
+                        "Your ID: " + androidId + " \n" +
                         "Update #: " + count++;
                 tvLocation.setText(ss);
             }
